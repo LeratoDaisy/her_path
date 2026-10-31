@@ -1,16 +1,26 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { ArrowRight, CheckCircle2, Coins, Gamepad2, HeartHandshake, MessageCircle, RotateCcw, Sparkles, Star, TriangleAlert } from "lucide-react";
+import { ArrowRight, CheckCircle2, Coins, Gamepad2, HeartHandshake, MessageCircle, Trophy, RotateCcw, Sparkles, Star, TriangleAlert } from "lucide-react";
 import { useStore } from "../store.jsx";
 import { finalReport, fmtR, initialState, pickEvent, runSales, SCENARIO, STEPS } from "../data/simulation.js";
 import { SpeakButton } from "../speech.jsx";
 import Tabs from "../components/Tabs.jsx";
 import Coach from "../components/Coach.jsx";
+import Quest from "../components/Quest.jsx";
 
 export default function MoneyMap() {
   const location = useLocation();
-  const [tab, setTab] = useState(location.state?.tab || (location.state?.ask ? "coach" : "sim"));
+  const [tab, setTab] = useState(location.state?.tab || (location.state?.ask ? "coach" : "quest"));
   const [coachPrompt, setCoachPrompt] = useState(location.state?.ask || null);
+
+  // Links from inside MoneyMap (e.g. a quest takeaway) arrive without a remount.
+  useEffect(() => {
+    if (location.state?.tab || location.state?.ask) {
+      setTab(location.state.tab || "coach");
+      if (location.state.ask) setCoachPrompt(location.state.ask);
+      window.scrollTo({ top: 0 });
+    }
+  }, [location.key, location.state]);
 
   const askCoach = (msg) => { setCoachPrompt(msg); setTab("coach"); };
 
@@ -18,14 +28,16 @@ export default function MoneyMap() {
     <div className="page">
       <p className="eyebrow">Learn</p>
       <h1 className="page-title">MoneyMap</h1>
-      <p className="lead-muted">Learn by doing. Run a business with real-world choices, see what happens, and ask your coach why.</p>
+      <p className="lead-muted">Learn by doing. Play quick money games, run a business with real-world choices, and ask your coach why.</p>
       <Tabs
-        tabs={[{ id: "sim", label: "Business simulation", icon: Gamepad2 }, { id: "coach", label: "AI business coach", icon: MessageCircle }]}
+        tabs={[{ id: "quest", label: "Money Quest", icon: Trophy }, { id: "sim", label: "Simulation", icon: Gamepad2 }, { id: "coach", label: "AI coach", icon: MessageCircle }]}
         value={tab}
         onChange={setTab}
         label="MoneyMap sections"
       />
-      {tab === "sim" ? <Simulation onAskCoach={askCoach} /> : <Coach initialMessage={coachPrompt} onInitialSent={() => setCoachPrompt(null)} />}
+      {tab === "quest" && <Quest />}
+      {tab === "sim" && <Simulation onAskCoach={askCoach} />}
+      {tab === "coach" && <Coach initialMessage={coachPrompt} onInitialSent={() => setCoachPrompt(null)} />}
     </div>
   );
 }

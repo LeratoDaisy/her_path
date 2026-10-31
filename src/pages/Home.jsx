@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ArrowRight, BadgeCheck, Compass, FolderPlus, HelpCircle, Map, Plus, TrendingDown, TrendingUp, Wallet } from "lucide-react";
 import { greeting, matchOpportunities, monthSummary, proofStats, rand, useStore } from "../store.jsx";
 import { SpeakButton } from "../speech.jsx";
+import { questSummary } from "../components/Quest.jsx";
 
 export function PlantJar() {
   return (
@@ -40,6 +41,7 @@ export default function Home() {
   const top = matchOpportunities(data)[0];
   const spentPct = m.moneyIn ? Math.round((m.moneyOut / m.moneyIn) * 100) : 0;
   const goal = data.goals[0];
+  const quest = questSummary(data);
 
   const summaryText = `You have ${rand(m.left)} left this month. Money in ${rand(m.moneyIn)}, money out ${rand(m.moneyOut)}. You have spent ${spentPct}% of what came in.`;
 
@@ -52,7 +54,7 @@ export default function Home() {
 
   const journey = [
     { step: "Manage", to: "/wallet", icon: Wallet, title: "HerWallet", stat: `${Object.keys(data.budgets).length} budgets set`, done: Object.keys(data.budgets).length > 0 },
-    { step: "Learn", to: "/moneymap", icon: Map, title: "MoneyMap", stat: data.simulation.best ? `Best score ${data.simulation.best.score}/100` : "Try the business simulation", done: !!data.simulation.best },
+    { step: "Learn", to: "/moneymap", icon: Map, title: "MoneyMap", stat: quest.xp ? `${quest.title} · ${quest.stars}/${quest.maxStars} stars` : "Play Money Quest", done: quest.stars > 0 || !!data.simulation.best },
     { step: "Prove", to: "/proof", icon: BadgeCheck, title: "ProofPocket", stat: `${stats.verifiedJobs} verified jobs`, done: stats.verifiedJobs > 0 },
     { step: "Grow", to: "/next-move", icon: Compass, title: "Next Move", stat: top ? `${top.score}% top match` : "See opportunities", done: top?.score >= 70 },
   ];

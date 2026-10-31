@@ -43,15 +43,15 @@ export default function Coach({ initialMessage, onInitialSent }) {
   const [busy, setBusy] = useState(false);
   const [listening, setListening] = useState(false);
   const logRef = useRef(null);
-  const sentInitial = useRef(false);
+  const sentInitial = useRef(null);
 
   useEffect(() => {
     logRef.current?.scrollTo({ top: logRef.current.scrollHeight, behavior: "smooth" });
   }, [messages]);
 
   useEffect(() => {
-    if (initialMessage && !sentInitial.current) {
-      sentInitial.current = true;
+    if (initialMessage && sentInitial.current !== initialMessage) {
+      sentInitial.current = initialMessage;
       send(initialMessage);
       onInitialSent?.();
     }

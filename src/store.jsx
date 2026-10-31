@@ -19,7 +19,8 @@ function load(key, fallback) {
 export const uid = (p = "id") => `${p}-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
 
 export function StoreProvider({ children }) {
-  const [data, setData] = useState(() => load(DATA_KEY, createSeed));
+  // Fill in sections added after the user first saved (e.g. Money Quest progress).
+  const [data, setData] = useState(() => ({ ...createSeed(), ...load(DATA_KEY, createSeed) }));
   const [prefs, setPrefs] = useState(() =>
     load(PREFS_KEY, () => ({
       theme: document.documentElement.dataset.theme || "light",
@@ -82,6 +83,18 @@ export function StoreProvider({ children }) {
         if (!d.simulation.best || result.score > d.simulation.best.score) d.simulation.best = result;
         return d;
       }),
+      recordLevel: (id, result) => update((d) => {
+        const prev = d.game.levels[id];
+        // Keep the best run so replays can improve a score but never farm XP.
+        if (!prev || result.xp > prev.xp || result.stars > prev.stars) {
+          d.game.levels[id] = { stars: Math.max(result.stars, prev?.stars || 0), xp: Math.max(result.xp, prev?.xp || 0), plays: (prev?.plays || 0) + 1 };
+        } else {
+          prev.plays = (prev.plays || 0) + 1;
+        }
+        d.game.bestCombo = Math.max(d.game.bestCombo || 0, result.bestCombo || 0);
+        return d;
+      }),
+      setQuestFlag: (flag) => update((d) => { d.game.flags[flag] = true; return d; }),
       setCoachHistory: (history) => update((d) => { d.coachHistory = history.slice(-30); return d; }),
       reset: () => setData(createSeed()),
     }),

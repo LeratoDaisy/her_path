@@ -7,7 +7,7 @@ HerPath is one economic-empowerment journey for women: from skills → financial
 | Step | Section | What it does |
 |---|---|---|
 | Manage | **HerWallet** | Track money in/out, monthly budgets, savings & business goals, spending chart and plain-language insights |
-| Learn | **MoneyMap** | "Glow Body Butter" business simulation (buy ingredients, calculate cost per unit, price, handle discounts, surprise expenses, save/reinvest/borrow) + **Thandi**, an AI business coach powered by Claude |
+| Learn | **MoneyMap** | **Money Quest**: bite-sized games across Learn → Manage → Prove → Move (swipe-to-sort, price-it-right slider, budget builder, scenario choices) with XP, stars, badges, a growing plant and real-life challenges tied to the app; plus a "Glow Body Butter" business simulation (buy ingredients, calculate cost per unit, price, handle discounts, surprise expenses, save/reinvest/borrow) + **Thandi**, an AI business coach powered by Claude |
 | Prove | **ProofPocket** | Digital work passport: log jobs, payments, photos and skills; customers verify via a link/QR; share your passport by QR, link or WhatsApp |
 | Grow | **Next Move** | Opportunities ranked by your skills, interests, location and verified proof; CV builder (auto-filled, printable) with matching jobs; Funding Finder with a funding-readiness checklist |
 

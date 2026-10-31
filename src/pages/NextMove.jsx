@@ -66,6 +66,7 @@ function Matches() {
 
 function OpportunityCard({ o }) {
   const navigate = useNavigate();
+  const { actions } = useStore();
   const tone = o.score >= 75 ? "strong" : o.score >= 50 ? "medium" : "weak";
   const deadline = new Date(Date.now() + o.deadline * 864e5).toLocaleDateString("en-ZA", { day: "numeric", month: "short" });
   const summary = `${o.title}, ${o.type} with ${o.org}. ${o.score}% match. ${o.reasons.join(". ")}. ${o.detail}`;
@@ -87,7 +88,7 @@ function OpportunityCard({ o }) {
         {o.missing.length > 0 && <li className="gap"><Circle size={16} aria-hidden="true" /> Skills to build: {o.missing.join(", ")}</li>}
       </ul>
       <div className="row">
-        <button className="btn btn-primary sm" onClick={() => navigate("/moneymap", { state: { ask: `I'm interested in "${o.title}" (${o.type}, ${o.org}). ${o.detail} How should I prepare and apply, and is it a good fit for my situation?` } })}>
+        <button className="btn btn-primary sm" onClick={() => { actions.setQuestFlag("plannedMove"); navigate("/moneymap", { state: { ask: `I'm interested in "${o.title}" (${o.type}, ${o.org}). ${o.detail} How should I prepare and apply, and is it a good fit for my situation?` } }); }}>
           <MessageCircle size={16} aria-hidden="true" /> Plan this with the coach
         </button>
         {!o.proofOk && <button className="btn btn-soft sm" onClick={() => navigate("/proof", { state: { add: true } })}><BadgeCheck size={16} aria-hidden="true" /> Add proof</button>}
